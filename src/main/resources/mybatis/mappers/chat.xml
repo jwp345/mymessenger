@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="chat">
+	
+	<insert id="save" parameterType="chatvo">
+		<![CDATA[
+		insert
+		  into user 
+		values (null, #{name }, #{email }, password(#{password }), #{gender }, now())
+		]]>
+	</insert>
+
+	<select id="getAllUnreadByID" parameterType="string" resultType="int">
+		<![CDATA[
+		 SELECT COUNT(chatID) 
+		 FROM CHAT 
+		 WHERE toID = #{userID } AND chatRead = 0
+		]]>
+	</select>	
+</mapper>

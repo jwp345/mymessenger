@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+	
+	<insert id="register" parameterType="uservo">
+		<![CDATA[
+		insert
+		  into user 
+		values (#{userID }, #{userPassword }, #{userName }, password(#{userAge }), #{userGender }, #{userEmail })
+		]]>
+	</insert>
+
+	<select id="findByID" parameterType="uservo" resultType="uservo">
+		<![CDATA[
+		 SELECT userID, userPassword, userName, userAge, userGender, userEmail 
+		 FROM USER 
+		 WHERE userID = #{userID } AND userPassword = #{userPassword }
+		]]>
+	</select>	
+</mapper>

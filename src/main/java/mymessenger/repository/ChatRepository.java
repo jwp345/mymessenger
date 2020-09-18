@@ -14,6 +14,4 @@ public class ChatRepository {
 		int num = sqlSession.selectOne("chat.getAllUnreadByID", userID);
 		return num;
 	}
-
-	
 }

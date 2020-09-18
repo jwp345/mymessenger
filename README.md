@@ -1,1 +1,1 @@
-# Spring으로 만든 회원제 채팅 메신저 
+# Spring, mybatis, jstl로 만든 회원제 채팅 메신저 

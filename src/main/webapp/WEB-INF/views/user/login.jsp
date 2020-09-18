@@ -20,7 +20,7 @@
 		<div class="collapse navbar-collapse"
 			id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="${pageContext.request.contextPath }/user/index">메인</a>
+				<li><a href="${pageContext.request.contextPath }">메인</a>
 				<li><a href="${pageContext.request.contextPath }/user/find">친구찾기</a></li>	
 			</ul>
 			<c:if test='${result eq "fail" }'>

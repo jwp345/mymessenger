@@ -17,13 +17,12 @@
 	function registerCheckFunction() {
 		var userID = $('#userID').val();
 		$.ajax({
-			type : 'POST',
-			url : '${pageContext.request.contextPath }/api/user/UserCheck',
-			data : {
-				userID : userID
-			},
-			success : function(result) {
-				if (result == 1) {
+			type : 'get',
+			url : '${pageContext.request.contextPath }/api/user/UserCheck?userID=' + userID,
+			data : "",
+			dataType: "json",
+			success : function(response) {
+				if (response.data == 0) {
 					$('#checkMessage').html('사용할 수 있는 아이디입니다.');
 					$('#checkType')
 							.attr('class', 'modal-content panel-success');
@@ -37,7 +36,7 @@
 		});
 	}
 	function passwordCheckFunction() {
-		var userPassword1 = $('#userPassword1').val();
+		var userPassword1 = $('#userPassword').val();
 		var userPassword2 = $('#userPassword2').val();
 		if (userPassword1 != userPassword2) {
 			$('#passwordCheckMessage').html('비밀번호가 서로 일치하지 않습니다.');
@@ -90,8 +89,8 @@
 					<tr>
 						<td style="width: 110px;"><h5>비밀번호</h5></td>
 						<td colspan="2"><input onkeyup="passwordCheckFunction();"
-							class="form-control" id="userPassword1" type="password"
-							name="userPassword1" maxlength="20" placeholder="비밀번호를 입력하세요."></td>
+							class="form-control" id="userPassword" type="password"
+							name="userPassword" maxlength="20" placeholder="비밀번호를 입력하세요."></td>
 					</tr>
 					<tr>
 						<td style="width: 110px;"><h5>비밀번호 확인</h5></td>

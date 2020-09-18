@@ -17,8 +17,11 @@ public class UserService {
 		userRepository.register(userVo);
 	}
 	
-	public UserVo getUser(UserVo vo) {
-		return userRepository.findByID(vo);
+	public UserVo getUser(UserVo vo) { // login용 get USer
+		return userRepository.getUser(vo); 
 	}
 
+	public int findByID(String userID) {
+		return userRepository.findByID(userID);
+	}
 }

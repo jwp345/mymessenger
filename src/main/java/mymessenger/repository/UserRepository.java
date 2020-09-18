@@ -21,7 +21,12 @@ public class UserRepository {
 		return count == 1;
 	}
 
-	public UserVo findByID(UserVo vo) {
-		return sqlSession.selectOne("user.findByID", vo);
+	public UserVo getUser(UserVo vo) {
+		return sqlSession.selectOne("user.getUser", vo);
+	}
+
+	public int findByID(String userID) {
+		int num = sqlSession.selectOne("user.findByID", userID);
+		return num;
 	}
 }

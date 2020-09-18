@@ -14,7 +14,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@RequestMapping(value="/join", method=RequestMethod.GET)
+	@RequestMapping(value="/join")
 	public String join() {
 		return "user/join";
 	}
@@ -22,7 +22,7 @@ public class UserController {
 	@RequestMapping(value="/join", method=RequestMethod.POST)
 	public String join(UserVo userVo) {
 		userService.join(userVo);
-		return "redirect:/user/joinsuccess";
+		return "redirect:/";
 	}
 	
 	@RequestMapping(value="/login")
@@ -30,4 +30,8 @@ public class UserController {
 		return "user/login";
 	}
 	
+	@RequestMapping(value="/find")
+	public String find() {
+		return "user/find";
+	}
 }

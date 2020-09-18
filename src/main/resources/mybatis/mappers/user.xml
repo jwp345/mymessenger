@@ -6,16 +6,24 @@
 	<insert id="register" parameterType="uservo">
 		<![CDATA[
 		insert
-		  into user 
-		values (#{userID }, #{userPassword }, #{userName }, password(#{userAge }), #{userGender }, #{userEmail })
+		  into USER 
+		values (#{userID }, #{userPassword }, #{userName }, #{userAge }, #{userGender }, #{userEmail }, null)
 		]]>
 	</insert>
 
-	<select id="findByID" parameterType="uservo" resultType="uservo">
+	<select id="getUser" parameterType="uservo" resultType="uservo">
 		<![CDATA[
 		 SELECT userID, userPassword, userName, userAge, userGender, userEmail 
 		 FROM USER 
 		 WHERE userID = #{userID } AND userPassword = #{userPassword }
+		]]>
+	</select>	
+	
+	<select id="findByID" parameterType="String" resultType="int">
+		<![CDATA[
+		 SELECT COUNT(userID)
+		 FROM USER 
+		 WHERE userID = #{userID }
 		]]>
 	</select>	
 </mapper>

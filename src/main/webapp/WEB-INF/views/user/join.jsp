@@ -138,32 +138,31 @@
 			</table>
 		</form>
 	</div>
-	<%
-		String messageContent = null;
-	if (session.getAttribute("messageContent") != null) {
-		messageContent = (String) session.getAttribute("messageContent");
-	}
-	String messageType = null;
-	if (session.getAttribute("messageType") != null) {
-		messageType = (String) session.getAttribute("messageType");
-	}
-	if (messageContent != null) {
-	%>
+		<c:if test='${not empty result }'>
 	<div class="modal fade" id="messageModal" tabindex="-1" role="dialog"
 		aria-hidden="true">
 		<div class="vertical-alignment-helper">
 			<div class="modal-dialog vertical-align-center">
-				<div class="modal-content <%if (messageType.equals("오류 메시지")) out.println("panel-warning"); else out.println("panel-success");%>">
+				<div class="modal-content 
+				<c:choose>
+				<c:when test='${result eq "fail" }'>
+				 <p>
+				 	panel-warning
+				 </p>
+				 </c:when>
+				 <c:otherwise>
+				  <p>panel-success</p>
+				  </c:otherwise></c:choose>">
 					<div class="modal-header panel-heading">
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 						</button>
 						<h4 class="modal-title">
-							<%=messageType%>
+							${result }
 						</h4>
 					</div>
 					<div class="modal-body">
-						<%=messageContent%>
+						${message }
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
@@ -172,14 +171,11 @@
 			</div>
 		</div>
 	</div>
+	</c:if>
 	<script>
 		$('#messageModal').modal("show");
 	</script>
-	<%
-		session.removeAttribute("messageContent");
-	session.removeAttribute("messageType");
-	}
-	%>
+	
 	<div class="modal fade" id="checkModal" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="vertical-alignment-helper">
 			<div class="modal-dialog vertical-align-center">

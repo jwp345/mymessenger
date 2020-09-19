@@ -4,18 +4,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<%
-	String userID = null;
-	if (session.getAttribute("userID") != null) {
-		userID = (String) session.getAttribute("userID");
-	}
-	if (userID == null) {
-		session.setAttribute("messageType", "오류 메시지");
-		session.setAttribute("messageContent", "현재 로그인이 되어 있지 않습니다.");
-		response.sendRedirect("index.jsp");
-		return;
-	}
-%>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,13 +16,12 @@
 		function getUnread() {
 			$.ajax({
 				type: "POST",
-				url: "./chatUnread",
-				data: {
-					userID: encodeURIComponent('<%= userID %>'),
-				},
-				success: function(result) {
-					if(result >= 1) {
-						showUnread(result);
+				url: "${pageContext.request.contextPath }/api/user/chatUnread",
+				data: "",
+				dataType: "json",
+				success: function(response) {
+					if(response.data > 0) {
+						showUnread(response.data);
 					} else {
 						showUnread('');
 					}
@@ -95,13 +82,12 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp"/>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="index.jsp">메인</a>
-				<li><a href="find.jsp">친구찾기</a></li>
-				<li class="active"><a href="box.jsp">메시지함<span id="unread" class="label label-info"></span></a></li>
+				<li><a href="${pageContext.request.contextPath }">메인</a>
+				<li><a href="${pageContext.request.contextPath }/user/find">친구찾기</a></li>
+				<li class="active"><a href="${pageContext.request.contextPath }/chat/box">메시지함<span id="unread" class="label label-info"></span></a></li>
 			</ul>
-			<%
-				if(userID == null) {
-			%>
+			<c:choose>
+			<c:when test="${empty authUser }">
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle"
@@ -109,14 +95,13 @@
 						aria-expanded="false">접속하기<span class="caret"></span>	
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="login.jsp">로그인</a></li>
-						<li><a href="join.jsp">회원가입</a></li>						
+						<li><a href="${pageContext.request.contextPath }/user/login">로그인</a></li>
+						<li><a href="${pageContext.request.contextPath }/user/join">회원가입</a></li>						
 					</ul>
 				</li>
 			</ul>
-			<%
-				} else {
-			%>
+			</c:when>
+			<c:otherwise>
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle"
@@ -124,13 +109,12 @@
 						aria-expanded="false">회원관리<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="logoutAction.jsp">로그아웃</a></li>
+						<li><a href="${pageContext.request.contextPath }/user/logout">로그아웃</a></li>
 					</ul>
 				</li>
-			</ul>	
-			<%
-				}
-			%>
+			</ul>
+			</c:otherwise>
+			</c:choose>	
 		</div>
 	</nav>
 	<div class="container">
@@ -149,32 +133,31 @@
 		</table>
 	</div>
 	
-	<%
-		String messageContent = null;
-	if (session.getAttribute("messageContent") != null) {
-		messageContent = (String) session.getAttribute("messageContent");
-	}
-	String messageType = null;
-	if (session.getAttribute("messageType") != null) {
-		messageType = (String) session.getAttribute("messageType");
-	}
-	if (messageContent != null) {
-	%>
+	<c:if test='${not empty result }'>
 	<div class="modal fade" id="messageModal" tabindex="-1" role="dialog"
 		aria-hidden="true">
 		<div class="vertical-alignment-helper">
 			<div class="modal-dialog vertical-align-center">
-				<div class="modal-content <%if (messageType.equals("오류 메시지")) out.println("panel-warning"); else out.println("panel-success");%>">
+				<div class="modal-content 
+				<c:choose>
+				<c:when test='${result eq "fail" }'>
+				 <p>
+				 	panel-warning
+				 </p>
+				 </c:when>
+				 <c:otherwise>
+				  <p>panel-success</p>
+				  </c:otherwise></c:choose>">
 					<div class="modal-header panel-heading">
 						<button type="button" class="close" data-dismiss="modal">
 							<span aria-hidden="true">&times;</span> <span class="sr-only">Close</span>
 						</button>
 						<h4 class="modal-title">
-							<%=messageType%>
+							${result }
 						</h4>
 					</div>
 					<div class="modal-body">
-						<%=messageContent%>
+						${message }
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
@@ -183,27 +166,17 @@
 			</div>
 		</div>
 	</div>
+	</c:if>
 	<script>
 		$('#messageModal').modal("show");
 	</script>
-	<%
-		session.removeAttribute("messageContent");
-		session.removeAttribute("messageType");
-		}
-	%>
-		<%
-		if(userID != null) {
-	%>
+	<c:if test="${not empty authUser }">
 		<script type="text/javascript">
 			$(document).ready(function() {
 					getUnread();
 					getInfiniteUnread();
-					chatBoxFunction();
-					getInfiniteBox();
 				});
 		</script>
-	<%
-		}
-	%>
+	</c:if>
 </body>
 </html>

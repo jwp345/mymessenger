@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import mymessenger.security.Auth;
 import mymessenger.service.UserService;
 import mymessenger.vo.UserVo;
 
@@ -30,6 +31,7 @@ public class UserController {
 		return "user/login";
 	}
 	
+	@Auth
 	@RequestMapping(value="/find")
 	public String find() {
 		return "user/find";

@@ -44,8 +44,6 @@
 
 	<!-- Interceptors -->
 	<mvc:interceptors>
-		<!-- <mvc:interceptor> <mvc:mapping path="/guestbook/**"/> <bean class="com.bit2020.mysite.interceptor.MyInterceptor02"/> 
-			</mvc:interceptor> -->
 		<mvc:interceptor>
 			<mvc:mapping path="/user/auth" />
 			<bean class="mymessenger.security.LoginInterceptor" />

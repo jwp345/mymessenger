@@ -18,4 +18,20 @@
 		 WHERE toID = #{userID } AND chatRead = 0
 		]]>
 	</select>	
+	
+	<select id="getBox" parameterType="string" resultType="chatvo">
+		<![CDATA[
+		SELECT * FROM CHAT 
+		WHERE chatID IN (SELECT MAX(chatID) FROM CHAT WHERE toID = #{userID } OR fromID = #{userID }
+		GROUP BY fromID, toID)
+		]]>
+	</select>	
+	
+	<select id="getUnreadChat" parameterType="chatvo" resultType="int">
+		<![CDATA[
+		SELECT COUNT(chatID) 
+		FROM CHAT 
+		WHERE fromID = #{fromID } AND toID = #{toID } AND chatRead = 0
+		]]>
+	</select>	
 </mapper>

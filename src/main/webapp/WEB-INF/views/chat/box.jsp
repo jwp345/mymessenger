@@ -37,20 +37,18 @@
 			$('#unread').html(result);
 		}
 		function chatBoxFunction() {
-			var userID = '<%= userID %>'
 			$.ajax({
 				type: "POST",
-				url: "./chatBox",
-				data: {
-					userID: encodeURIComponent(userID),
-				},
+				url: "${pageContext.request.contextPath }/chat/chatBox",
+				data: "",
+				dataType: "json",
 				success: function(data) {
 					if(data == "") return;
 					$('#boxTable').html('');
 					var parsed = JSON.parse(data);
 					var result = parsed.result;
 					for(var i = 0; i < result.length; i++) {
-						if(result[i][0].value == userID) {
+						if(result[i][0].value == "${authUser.userID }") {
 							result[i][0].value = result[i][1].value;
 						} else {
 							result[i][1].value = result[i][0].value;
@@ -61,7 +59,7 @@
 			});
 		}
 		function addBox(lastID, toID, chatContent, chatTime, unread) {
-			$('#boxTable').append('<tr onclick="location.href=\'chat.jsp?toID=' + encodeURIComponent(toID) + '\'">' +
+			$('#boxTable').append('<tr onclick="location.href=\'${pageContext.request.contextPath }/chat/chat?toID=' + toID + '\'">' +
 				'<td style="width: 150px;"><h5>' + lastID + '</h5></td>' +
 				'<td>' +
 				'<h5>' + chatContent + 
@@ -175,6 +173,8 @@
 			$(document).ready(function() {
 					getUnread();
 					getInfiniteUnread();
+					chatBoxFunction();
+					getInfiniteBox();
 				});
 		</script>
 	</c:if>

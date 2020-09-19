@@ -24,7 +24,7 @@ public class UserController {
 	@ResponseBody
 	@Auth
 	@RequestMapping("/chatUnread")
-	public JsonResult checkUnread(@AuthUser UserVo authUser) {
+	public JsonResult chatUnread(@AuthUser UserVo authUser) {
 			
 		String userID = "";
 		if(authUser.getUserID() != null)
@@ -42,5 +42,4 @@ public class UserController {
 		int num = userService.findByID(userID);
 		return JsonResult.success(num);
 	}
-	
 }

@@ -3,11 +3,11 @@
 
 <mapper namespace="chat">
 	
-	<insert id="save" parameterType="chatvo">
+	<insert id="Submit" parameterType="chatvo">
 		<![CDATA[
 		insert
-		  into user 
-		values (null, #{name }, #{email }, password(#{password }), #{gender }, now())
+		  into CHAT
+		values (NULL, #{fromID }, #{toID }, #{chatContent }, NOW(), 0)
 		]]>
 	</insert>
 
@@ -34,4 +34,20 @@
 		WHERE fromID = #{fromID } AND toID = #{toID } AND chatRead = 0
 		]]>
 	</select>	
+	
+		
+	<select id="getChatListByID" parameterType="chatvo" resultType="chatvo">
+		<![CDATA[
+		SELECT * FROM CHAT 
+		WHERE ((fromID = #{fromID } AND toID = #{toID }) OR (fromID = #{toID } AND toID = #{fromID })) 
+		AND chatID > #{chatID} ORDER BY chatTime
+		]]>
+	</select>	
+	
+	<update id="readChat" parameterType="chatvo">
+		<![CDATA[
+			UPDATE CHAT SET chatRead = 1 
+			WHERE (fromID = #{toID } AND toID = #{fromID })
+		]]>
+	</update>
 </mapper>

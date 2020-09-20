@@ -29,4 +29,17 @@ public class ChatRepository {
 		vo.setToID(userID);
 		return sqlSession.selectOne("chat.getUnreadChat", vo);
 	}
+
+	public int Submit(ChatVo vo) {
+		return sqlSession.insert("chat.Submit", vo);
+	}
+
+	public List<ChatVo> getChatListByID(ChatVo vo) {
+		return sqlSession.selectList("chat.getChatListByID", vo);
+	}
+
+	public void readChat(ChatVo vo) {
+		sqlSession.update("chat.readChat", vo);
+		return;
+	}
 }

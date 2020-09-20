@@ -11,5 +11,5 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>		
 			</button>		
-			<a class="navbar-brand" href="${pageContext.request.contextPath }/main/index">실시간 회원제 채팅 서비스</a>
+			<a class="navbar-brand" href="${pageContext.request.contextPath }">실시간 회원제 채팅 서비스</a>
 		</div>

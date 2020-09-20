@@ -25,6 +25,19 @@ public class ChatService {
 	public int getUnreadChat(String fromID, String userID) {
 		return chatRepository.getUnreadChat(fromID, userID);
 	}
+
+	public int Submit(ChatVo vo) {
+		return chatRepository.Submit(vo);
+	}
+
+	public List<ChatVo> getChatListByID(ChatVo vo) {
+		return chatRepository.getChatListByID(vo);
+	}
+
+	public void readChat(ChatVo vo) {
+		chatRepository.readChat(vo);
+		return;
+	}
 	
 	
 }

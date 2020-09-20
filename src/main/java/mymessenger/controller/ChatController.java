@@ -25,15 +25,26 @@ public class ChatController {
 	@Auth
 	@RequestMapping(value="/chat")
 	public String chat() {
-		return "/chat/chat";
+		return "redirect:/";
 	}
 	
 	@Auth
 	@RequestMapping(value="/chat", method=RequestMethod.GET)
-	public String chat(
+	public String chat(@AuthUser UserVo authUser,
 			@RequestParam(value="toID", required=true, defaultValue = "") String toID, Model model) {
 		
-		model.addAttribute(toID);
+		if (toID.equals("")) {
+//			model.addAttribute("result", "fail");
+//			model.addAttribute("message", "대화 상대가 지정 되지 않았습니다.");
+			return "redirect:/";
+		} // 수정해야할 부분 redirect 처리 어케할지
+		if(authUser.getUserID().equals(toID)) {
+//			model.addAttribute("result", "fail");
+//			model.addAttribute("message", "자기 자신에게는 쪽지를 보낼 수 없습니다.");
+			return "redirect:/";
+		} // 수정해야할 부분
+		
+		model.addAttribute("toID", toID);
 		return "/chat/chat";
 	}
 	
@@ -42,9 +53,9 @@ public class ChatController {
 	public String box() {
 		return "/chat/box";
 	}
-	
-	@ResponseBody
+
 	@Auth
+	@ResponseBody
 	@RequestMapping("/chatBox")
 	public String chatBox(@AuthUser UserVo authUser) {
 		
@@ -104,6 +115,71 @@ public class ChatController {
 			if(i != 0) result.append(",");
 		}
 		result.append("], \"last\":\"" + chatList.get(chatList.size() - 1).getChatID() + "\"}");
+		return result.toString();
+	}
+	
+	@Auth
+	@ResponseBody
+	@RequestMapping(value="/Submit")
+	public int Submit(@AuthUser UserVo authUser,
+			@RequestParam(value="toID", required=true, defaultValue = "") String toID,
+			@RequestParam(value="chatContent", required=true) String chatContent) {
+		
+		String fromID = authUser.getUserID();
+		
+		ChatVo vo = new ChatVo();
+		vo.setToID(toID);
+		vo.setFromID(fromID);
+		vo.setChatContent(chatContent);
+		
+		return chatService.Submit(vo);
+	}
+	
+	@Auth
+	@ResponseBody
+	@RequestMapping(value="/chatList", method=RequestMethod.POST)
+	public String chatList(@AuthUser UserVo authUser,
+			@RequestParam(value="toID", required=true, defaultValue = "") String toID,
+			@RequestParam(value="listType", required=true) String chatID) {
+		String fromID = authUser.getUserID();
+		
+		StringBuffer result = new StringBuffer("");
+		result.append("{\"result\":[");
+		ChatVo vo = new ChatVo();
+		vo.setChatID(Integer.valueOf(chatID));
+		vo.setFromID(fromID);
+		vo.setToID(toID);
+		List<ChatVo> chatList = chatService.getChatListByID(vo);
+		if(chatList.size() == 0) return "";
+		
+		int size = chatList.size();
+		for(int i = 0; i<size; i++)
+		{
+			ChatVo chat = new ChatVo();
+			chat.setChatID(chatList.get(0).getChatID());
+			chat.setFromID(chatList.get(0).getFromID().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+			chat.setToID(chatList.get(0).getToID().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+			chat.setChatContent(chatList.get(0).getChatContent().replaceAll(" ", "&nbsp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("\n", "<br>"));
+			int chatTime = Integer.parseInt(chatList.get(0).getChatTime().substring(11, 13));
+			String timeType = "오전";
+			if(chatTime > 12) {
+				timeType = "오후";
+				chatTime -= 12;
+			}
+			chat.setChatTime(chatList.get(0).getChatTime().substring(0, 11) + " " + timeType + " " + chatTime + ":" + chatList.get(0).getChatTime().substring(14, 16) + "");
+			chatList.add(chat);
+			chatList.remove(0);
+		}
+		
+		for(int i = 0; i < chatList.size(); i++) {
+			result.append("[{\"value\": \"" + chatList.get(i).getFromID() + "\"},");
+			result.append("{\"value\": \"" + chatList.get(i).getToID() + "\"},");
+			result.append("{\"value\": \"" + chatList.get(i).getChatContent() + "\"},");
+			result.append("{\"value\": \"" + chatList.get(i).getChatTime() + "\"}]");
+			if(i != chatList.size() -1) result.append(",");
+		}
+		result.append("], \"last\":\"" + chatList.get(chatList.size() - 1).getChatID() + "\"}");
+		chatService.readChat(vo);
 		return result.toString();
 	}
 }
